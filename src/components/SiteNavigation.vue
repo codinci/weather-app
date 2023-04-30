@@ -73,9 +73,10 @@ const savedCities = ref([])
 const addCity = () => {
 	if (localStorage.getItem('savedCities')) {
 		savedCities.value = JSON.parse(
-			localStorage.getItem(savedCities)
+			localStorage.getItem('savedCities')
 		);
 	}
+
 	const locationObj = {
 		id: uid(),
 		state: route.params.state,
