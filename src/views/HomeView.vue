@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import CityList from '../components/CityList.vue';
 
 const searchQuery = ref("");
 const queryTimeout = ref(null);
@@ -30,7 +31,6 @@ const getSearchResults = () => {
 
 const router = useRouter();
 const previewCity = (searchResult) => {
-  console.log(searchResult);
   const [city, state] = searchResult.place_name.split(',');
   router.push({
     name: 'cityView',
@@ -75,6 +75,15 @@ const previewCity = (searchResult) => {
           </li>
         </template>
       </ul>
+    </div>
+    <div class="flex flex-col gap-4">
+      <!-- <CityList/> -->
+      <Suspense>
+        <CityList/>
+        <template #fallback>
+          <p>Loading ...</p>
+        </template>
+      </Suspense>
     </div>
   </main>
 </template>
