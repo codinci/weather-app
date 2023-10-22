@@ -1,48 +1,48 @@
 <script setup>
-import { ref } from 'vue';
-import axios from 'axios';
-import { useRouter } from 'vue-router';
-import CityList from '../components/CityList.vue';
-import CityCardSkeleton from '../components/CityCardSkeleton.vue';
+  import { ref } from 'vue';
+  import axios from 'axios';
+  import { useRouter } from 'vue-router';
+  import CityList from '../components/CityList.vue';
+  import CityCardSkeleton from '../components/CityCardSkeleton.vue';
 
-const searchQuery = ref("");
-const queryTimeout = ref(null);
-const mapboxSearchResults = ref(null);
-const searchError = ref(null);
-const getSearchResults = () => {
+  const searchQuery = ref("");
+  const queryTimeout = ref(null);
+  const mapboxSearchResults = ref(null);
+  const searchError = ref(null);
+  const getSearchResults = () => {
   const MAPBOX_API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
 
-  clearTimeout(queryTimeout.value);
-  queryTimeout.value = setTimeout(async () => {
-    if (searchQuery.value !== '') {
-      try {
-        const result = await axios.get(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${searchQuery.value}
-        .json?access_token=${MAPBOX_API_KEY}&types=place`
-        );
-        mapboxSearchResults.value = result.data.features;
-      } catch {
-        searchError.value = true;
+    clearTimeout(queryTimeout.value);
+    queryTimeout.value = setTimeout(async () => {
+      if (searchQuery.value !== '') {
+        try {
+          const result = await axios.get(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${searchQuery.value}
+          .json?access_token=${MAPBOX_API_KEY}&types=place`
+          );
+          mapboxSearchResults.value = result.data.features;
+        } catch {
+          searchError.value = true;
+        }
+        return;
       }
-      return;
-    }
-    mapboxSearchResults.value = null
-  }, 300);
-}
+      mapboxSearchResults.value = null
+    }, 300);
+  }
 
-const router = useRouter();
-const previewCity = (searchResult) => {
-  const [city, state] = searchResult.place_name.split(',');
-  router.push({
-    name: 'cityView',
-    params: { state: state.replaceAll(" ", ""), city: city },
-    query: {
-      lat: searchResult.geometry.coordinates[1],
-      lng: searchResult.geometry.coordinates[0],
-      preview: true
-    }
-  })
-}
+  const router = useRouter();
+  const previewCity = (searchResult) => {
+    const [city, state] = searchResult.place_name.split(',');
+    router.push({
+      name: 'cityView',
+      params: { state: state.replaceAll(" ", ""), city: city },
+      query: {
+        lat: searchResult.geometry.coordinates[1],
+        lng: searchResult.geometry.coordinates[0],
+        preview: true
+      }
+    })
+  }
 </script>
 
 <template>
